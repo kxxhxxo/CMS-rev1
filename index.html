@@ -13044,13 +13044,11 @@ window.cmsLogout=function(){
 
     // ═══ ROW 3: 경영지원실 | 영업/PM ═══
     html += '<div style="max-width:1100px;margin:0 auto">';
-    // 가로선: flex 3:2 비율이므로 왼쪽 중앙=30%, 오른쪽 중앙=80%
-    html += '<div style="margin-left:30%;margin-right:20%;height:2px;background:#bbb"></div>';
-    // 양쪽 블록
+    // 양쪽 블록 (각 블록 상단 border로 가로선 역할)
     html += '<div style="display:flex">';
 
     // 경영지원실 (왼쪽 60%)
-    html += '<div style="flex:3;display:flex;flex-direction:column;align-items:center">';
+    html += '<div style="flex:3;display:flex;flex-direction:column;align-items:center;border-top:2px solid #bbb;margin-right:-1px">';
     html += '<div style="width:2px;height:20px;background:#bbb"></div>';
     html += '<div style="background:var(--accent);color:#fff;padding:12px 28px;border-radius:10px;font-weight:800;font-size:14px">경영지원실</div>';
     html += '<div style="font-size:14px;font-weight:600;margin:6px 0 16px">' + editable('org-ed-vp', org.vp.name) + ' ' + org.vp.title + '</div>';
@@ -13063,7 +13061,7 @@ window.cmsLogout=function(){
     html += '</div></div>';
 
     // 영업/PM (오른쪽 40%)
-    html += '<div style="flex:2;display:flex;flex-direction:column;align-items:center">';
+    html += '<div style="flex:2;display:flex;flex-direction:column;align-items:center;border-top:2px solid #bbb;margin-left:-1px">';
     html += '<div style="width:2px;height:20px;background:#bbb"></div>';
     html += '<div style="background:#0d47a1;color:#fff;padding:12px 28px;border-radius:10px;font-weight:800;font-size:14px">영업 / PM</div>';
     html += '<div style="font-size:12px;color:var(--text3);margin:6px 0 16px">현장 담당</div>';
@@ -13084,7 +13082,7 @@ window.cmsLogout=function(){
     html += '</div></div>';
 
     html += '</div>'; // flex 끝
-    html += '</div>'; // wrapper 끝
+    html += '</div>'; // max-width wrapper 끝
 
     container.innerHTML = html;
   }
