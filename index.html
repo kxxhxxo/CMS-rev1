@@ -1223,10 +1223,6 @@ window.cmsLogout=function(){
   </div>
 
   <div class="sidebar-section">현장 관리</div>
-  <div id="nav-site-selector" style="padding:4px 16px 8px;display:none">
-    <select class="form-select" id="nav-active-site" onchange="switchActiveSite(this.value)" style="width:100%;padding:6px 8px;font-size:12px;font-weight:700;border:2px solid var(--accent);border-radius:6px;background:#f0fdf4">
-    </select>
-  </div>
   <div class="nav-item" onclick="navigate('materials', this)">
     <span class="nav-icon">📦</span> 자재관리
   </div>
@@ -1270,11 +1266,12 @@ window.cmsLogout=function(){
 <!-- MAIN -->
 <main class="main">
   <div class="topbar">
-    <div class="topbar-title" id="topbar-title">현황 대시보드</div>
-    <div class="topbar-project">
+    <div class="topbar-title" id="topbar-title" style="display:none"></div>
+    <div class="topbar-project" style="cursor:pointer;position:relative">
       <div class="project-dot"></div>
-      <span>샘플 복합개발 1공구</span>
-      <span style="color:var(--text3)">▾</span>
+      <select id="topbar-site-select" onchange="switchActiveSite(this.value);updateTopbarSite()" style="border:none;background:transparent;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;padding:4px 20px 4px 0;appearance:none;-webkit-appearance:none;max-width:400px;min-width:200px;outline:none">
+      </select>
+      <span style="color:var(--text3);position:absolute;right:0;top:50%;transform:translateY(-50%);pointer-events:none">▾</span>
     </div>
     <div class="topbar-btn" title="검색">🔍</div>
     <div style="margin-left:auto;display:flex;gap:6px;align-items:center">
@@ -1297,178 +1294,86 @@ window.cmsLogout=function(){
       <div class="page-header">
         <div>
           <div class="page-title">현황 대시보드</div>
-          <div class="page-subtitle">샘플 복합개발 1공구 · 2025년 2월 기준</div>
-        </div>
-        <div style="display:flex;gap:8px">
-          <button class="btn btn-secondary">📥 엑셀 다운</button>
-          <button class="btn btn-primary">+ 일보 작성</button>
+          <div class="page-subtitle" id="dashboard-subtitle"></div>
         </div>
       </div>
 
-      <!-- KPI -->
-      <div class="kpi-grid">
-        <div class="kpi-card green">
+      <!-- KPI + 인력현황 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px">
+        <div class="kpi-card green" onclick="navigate('labor')" style="cursor:pointer">
           <div class="kpi-label">공사 진행률</div>
-          <div class="kpi-value">68.4%</div>
-          <div class="progress-bar" style="margin-bottom:8px"><div class="progress-fill" style="width:68.4%;background:var(--accent)"></div></div>
-          <div class="kpi-change up">▲ 3.2% 전월比</div>
+          <div class="kpi-value" id="dash-progress">0%</div>
+          <div class="progress-bar" style="margin-bottom:8px"><div class="progress-fill" id="dash-progress-bar" style="width:0%;background:var(--accent)"></div></div>
+          <div class="kpi-change" id="dash-progress-sub" style="color:var(--text3)">데이터 없음</div>
         </div>
-        <div class="kpi-card blue">
-          <div class="kpi-label">총 도급금액</div>
-          <div class="kpi-value">52.0억</div>
-          <div class="kpi-change" style="color:var(--text3)">기성 34.8억 / 잔여 17.2억</div>
-        </div>
-        <div class="kpi-card yellow">
-          <div class="kpi-label">이번달 자재 발주</div>
-          <div class="kpi-value">1.2억</div>
-          <div class="kpi-change down">▲ 12% 전월比</div>
-        </div>
-        <div class="kpi-card purple">
+        <div class="kpi-card purple" onclick="navigate('labor')" style="cursor:pointer">
           <div class="kpi-label">금일 출역 인원</div>
-          <div class="kpi-value">47명</div>
-          <div class="kpi-change up">목표 45명 달성 ✓</div>
+          <div class="kpi-value" id="dash-attendance">0명</div>
+          <div class="kpi-change" id="dash-attendance-sub" style="color:var(--text3)"></div>
         </div>
-      </div>
-
-      <!-- CHARTS + TIMELINE -->
-      <div class="grid-3">
-        <!-- 월별 기성 차트 -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">월별 기성 현황</div>
-            <span style="font-size:11px;color:var(--text3)">2025년</span>
-          </div>
-          <div class="card-body">
-            <div class="chart-bars">
-              <div class="bar-item">
-                <div class="bar-val">3.8억</div>
-                <div class="bar-fill" style="height:62%;background:var(--accent);opacity:0.6"></div>
-                <div class="bar-label">9월</div>
-              </div>
-              <div class="bar-item">
-                <div class="bar-val">4.3억</div>
-                <div class="bar-fill" style="height:71%;background:var(--accent);opacity:0.7"></div>
-                <div class="bar-label">10월</div>
-              </div>
-              <div class="bar-item">
-                <div class="bar-val">5.1억</div>
-                <div class="bar-fill" style="height:84%;background:var(--accent);opacity:0.8"></div>
-                <div class="bar-label">11월</div>
-              </div>
-              <div class="bar-item">
-                <div class="bar-val">4.7억</div>
-                <div class="bar-fill" style="height:78%;background:var(--accent);opacity:0.9"></div>
-                <div class="bar-label">12월</div>
-              </div>
-              <div class="bar-item">
-                <div class="bar-val">5.6억</div>
-                <div class="bar-fill" style="height:92%;background:var(--accent)"></div>
-                <div class="bar-label">1월</div>
-              </div>
-              <div class="bar-item">
-                <div class="bar-val">5.4억</div>
-                <div class="bar-fill" style="height:89%;background:var(--accent2)"></div>
-                <div class="bar-label">2월</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 모듈 현황 -->
-        <div class="card">
-          <div class="card-header"><div class="card-title">주요 알림</div></div>
-          <div class="card-body" style="padding:12px 16px">
-            <div class="timeline">
-              <div class="timeline-item">
-                <div class="timeline-dot" style="background:rgba(248,81,73,0.15);color:var(--danger);border-color:var(--danger)">⚠</div>
-                <div class="timeline-content">
-                  <div class="timeline-title">자재 재고 부족 (철근 D16)</div>
-                  <div class="timeline-time">오늘 09:12 · 자재관리</div>
-                </div>
-              </div>
-              <div class="timeline-item">
-                <div class="timeline-dot" style="background:rgba(184,134,11,0.1);color:var(--accent3);border-color:var(--accent3)">💰</div>
-                <div class="timeline-content">
-                  <div class="timeline-title">전도금 청구 승인 대기</div>
-                  <div class="timeline-time">오늘 08:45 · 경비관리</div>
-                </div>
-              </div>
-              <div class="timeline-item">
-                <div class="timeline-dot" style="background:rgba(63,185,80,0.15);color:var(--success);border-color:var(--success)">✓</div>
-                <div class="timeline-content">
-                  <div class="timeline-title">1월 노무비 정산 완료</div>
-                  <div class="timeline-time">어제 17:30 · 노무관리</div>
-                </div>
-              </div>
-              <div class="timeline-item">
-                <div class="timeline-dot" style="background:rgba(14,165,233,0.15);color:var(--accent2);border-color:var(--accent2)">📄</div>
-                <div class="timeline-content">
-                  <div class="timeline-title">기성고서 제출 완료</div>
-                  <div class="timeline-time">어제 15:00 · 프로젝트 관리</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 공사비 구성 -->
-        <div class="card">
-          <div class="card-header"><div class="card-title">공사비 구성</div></div>
-          <div class="card-body">
-            <div style="display:flex;flex-direction:column;gap:10px">
-              <div>
-                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-                  <span>자재비</span><span class="amount" style="color:var(--accent)">32.4억</span>
-                </div>
-                <div class="progress-bar"><div class="progress-fill" style="width:38%;background:var(--accent)"></div></div>
-              </div>
-              <div>
-                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-                  <span>노무비</span><span class="amount" style="color:var(--accent2)">28.1억</span>
-                </div>
-                <div class="progress-bar"><div class="progress-fill" style="width:33%;background:var(--accent2)"></div></div>
-              </div>
-              <div>
-                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-                  <span>장비비</span><span class="amount" style="color:var(--accent3)">12.6억</span>
-                </div>
-                <div class="progress-bar"><div class="progress-fill" style="width:15%;background:var(--accent3)"></div></div>
-              </div>
-              <div>
-                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-                  <span>경비</span><span class="amount" style="color:var(--accent4)">11.1억</span>
-                </div>
-                <div class="progress-bar"><div class="progress-fill" style="width:13%;background:var(--accent4)"></div></div>
-              </div>
-            </div>
+        <div class="card" onclick="navigate('labor')" style="cursor:pointer;margin:0">
+          <div class="card-header"><div class="card-title">인력 현황</div></div>
+          <div class="card-body" style="padding:12px 16px" id="dash-labor-info">
           </div>
         </div>
       </div>
 
-      <!-- 4대 모듈 바로가기 -->
+      <!-- 손익현황 -->
       <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><div class="card-title">현장 관리 모듈</div></div>
-        <div class="card-body">
-          <div class="module-grid">
-            <div class="module-card" onclick="navigate('materials', document.querySelector('.nav-item:nth-child(8)'))">
-              <div class="module-icon">📦</div>
-              <div class="module-name">자재관리</div>
-              <div class="module-count">발주 중 8건 · 재고 부족 3건</div>
-            </div>
-            <div class="module-card" onclick="navigate('labor', document.querySelector('.nav-item:nth-child(9)'))">
+        <div class="card-header">
+          <div class="card-title">손익현황</div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="table table-grid" style="font-size:12px;min-width:900px" id="dash-pnl-table">
+            <thead>
+              <tr style="background:var(--surface2)">
+                <th rowspan="2" style="min-width:100px;text-align:center;vertical-align:middle">손익현황</th>
+                <th rowspan="2" style="min-width:120px;text-align:right;vertical-align:middle">도급/하도급금액</th>
+                <th rowspan="2" style="min-width:120px;text-align:right;vertical-align:middle">실행금액</th>
+                <th rowspan="2" style="min-width:60px;text-align:center;vertical-align:middle">실행율%</th>
+                <th rowspan="2" style="min-width:120px;text-align:right;vertical-align:middle">투입금액</th>
+                <th rowspan="2" style="min-width:60px;text-align:center;vertical-align:middle">투입율%</th>
+                <th colspan="2" style="text-align:center">잔여금액</th>
+              </tr>
+              <tr style="background:var(--surface2)">
+                <th style="min-width:110px;text-align:right">계약대비</th>
+                <th style="min-width:110px;text-align:right">실행대비</th>
+              </tr>
+            </thead>
+            <tbody id="dash-pnl-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 모듈 바로가기 -->
+      <div class="card" style="margin-bottom:16px">
+          <div class="card-header"><div class="card-title">현장 관리 모듈</div></div>
+          <div class="card-body">
+            <div class="module-grid">
+            <div class="module-card" onclick="navigate('labor')" style="cursor:pointer">
               <div class="module-icon">👷</div>
               <div class="module-name">노무관리</div>
-              <div class="module-count">금일 출역 47명 · 이번달 12일</div>
+              <div class="module-count" id="dash-mod-labor">-</div>
             </div>
-            <div class="module-card" onclick="navigate('expense', document.querySelector('.nav-item:nth-child(10)'))">
+            <div class="module-card" onclick="navigate('expense')" style="cursor:pointer">
               <div class="module-icon">💰</div>
               <div class="module-name">경비관리</div>
-              <div class="module-count">전도금 2건 승인 대기</div>
+              <div class="module-count" id="dash-mod-expense">-</div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            <div class="module-card" onclick="navigate('meal')" style="cursor:pointer">
+              <div class="module-icon">🍚</div>
+              <div class="module-name">식수관리</div>
+              <div class="module-count" id="dash-mod-meal">-</div>
+            </div>
+            <div class="module-card" onclick="navigate('fund')" style="cursor:pointer">
+              <div class="module-icon">🏦</div>
+              <div class="module-name">자금청구</div>
+              <div class="module-count" id="dash-mod-fund">-</div>
+            </div>
+          </div><!-- /module-grid -->
+        </div><!-- /card-body -->
+      </div><!-- /card 모듈 -->
+    </div><!-- /page-dashboard -->
 
     <!-- ===== 프로젝트 관리 ===== -->
     <div class="page" id="page-dogeup">
@@ -2200,8 +2105,8 @@ window.cmsLogout=function(){
         </div>
       </div>
 
-      <!-- 정산월 선택 -->
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <!-- 정산월 + 현장 선택 -->
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
         <label style="font-size:13px;font-weight:700">정산월</label>
         <div style="display:flex;align-items:center;gap:8px">
           <button onclick="movePrMonth(-1)" style="background:none;border:1px solid var(--border);border-radius:6px;padding:3px 10px;cursor:pointer;font-size:15px">‹</button>
@@ -2209,6 +2114,11 @@ window.cmsLogout=function(){
           <button onclick="movePrMonth(1)" style="background:none;border:1px solid var(--border);border-radius:6px;padding:3px 10px;cursor:pointer;font-size:15px">›</button>
         </div>
         <input type="hidden" id="pr-month">
+        <div style="width:1px;height:24px;background:var(--border);margin:0 4px"></div>
+        <label style="font-size:13px;font-weight:700">현장</label>
+        <select class="form-select" id="pr-site-select" onchange="renderPayroll()" style="width:280px;padding:7px 12px">
+          <option value="">-- 현장 선택 --</option>
+        </select>
       </div>
 
       <!-- 탭 -->
@@ -2277,12 +2187,6 @@ window.cmsLogout=function(){
 
         <!-- 현장 탭 -->
         <div id="pr-tab-site" style="display:none">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-            <label style="font-size:13px;font-weight:700">현장 선택</label>
-            <select class="form-select" id="pr-site-select" onchange="renderPayroll()" style="width:280px;padding:7px 12px">
-              <option value="">-- 현장 선택 --</option>
-            </select>
-          </div>
           <div class="card">
             <div class="card-header">
               <div class="card-title">현장 인력 급여 명세</div>
@@ -3896,7 +3800,12 @@ window.cmsLogout=function(){
 
     // update nav active
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    if (navEl) navEl.classList.add('active');
+    if (navEl) { navEl.classList.add('active'); }
+    else {
+      document.querySelectorAll('.nav-item').forEach(function(n) {
+        if (n.getAttribute('onclick') && n.getAttribute('onclick').indexOf("'" + pageId + "'") >= 0) n.classList.add('active');
+      });
+    }
 
     // update topbar title
     const titles = {
@@ -3916,6 +3825,7 @@ window.cmsLogout=function(){
     document.getElementById('topbar-title').textContent = titles[pageId] || pageId;
     if(pageId === 'expense' && typeof expRender === 'function') expRender();
     if(pageId === 'meal' && typeof mealInit === 'function') mealInit();
+    if(pageId === 'dashboard') { try { renderDashboard(); } catch(e) { console.warn('Dashboard render error:', e); } }
     if(pageId === 'dogeup') {
       currentProjectId = null;
       document.getElementById('pj-list-view').style.display = '';
@@ -7978,26 +7888,26 @@ window.cmsLogout=function(){
 
   // 사이드바 현장선택 드롭다운 갱신
   function updateSiteSelector() {
-    var sel = document.getElementById('nav-active-site');
-    var container = document.getElementById('nav-site-selector');
-    if (!sel || !container) return;
-    var user = getCurrentUser();
-    var isAdmin = user === 'hq' || user === 'admin';
-    container.style.display = isAdmin ? '' : 'none';
-
     var pjList = getProjectList();
-    if (!pjList.length) { container.style.display = 'none'; return; }
-
-    sel.innerHTML = pjList.map(function(pj) {
-      return '<option value="' + pj.id + '"' + (pj.id === activeSiteId ? ' selected' : '') + '>' + (pj.name || '(이름없음)') + '</option>';
-    }).join('');
 
     // activeSiteId가 없으면 첫번째로
     if (!activeSiteId && pjList.length) {
       activeSiteId = pjList[0].id;
-      sel.value = activeSiteId;
       sessionStorage.setItem('cms_active_site', activeSiteId);
     }
+
+    // 상단 바 드롭다운 동기화
+    updateTopbarSite();
+  }
+
+  window.updateTopbarSite = function() {
+    var topSel = document.getElementById('topbar-site-select');
+    if (!topSel) return;
+    var pjList = getProjectList();
+    topSel.innerHTML = pjList.map(function(pj) {
+      return '<option value="' + pj.id + '"' + (pj.id === activeSiteId ? ' selected' : '') + '>' + (pj.name || '(이름없음)') + '</option>';
+    }).join('');
+    if (activeSiteId) topSel.value = activeSiteId;
   }
 
   // 프로젝트 목록에서 현장 클릭 시 → 현장관리로 진입
@@ -13266,6 +13176,170 @@ window.cmsLogout=function(){
     showToast('✅ 권한 설정이 저장되었습니다', 'success');
   }
 
+  /* ===== 대시보드 렌더링 ===== */
+  window.renderDashboard = function() {
+    if (!activeSiteId) return;
+    var sk = function(k) { return k + '_' + activeSiteId; };
+    var fa = function(v) { return v ? Number(v).toLocaleString() : '0'; };
+    var today = new Date().toISOString().slice(0, 10);
+    var now = new Date();
+    var curYm = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+
+    // 현장명 서브타이틀
+    var pjList = getProjectList();
+    var pj = pjList.find(function(p){return p.id===activeSiteId;});
+    var sub = document.getElementById('dashboard-subtitle');
+    if (sub) sub.textContent = pj ? pj.name + ' · ' + now.getFullYear() + '년 ' + (now.getMonth()+1) + '월 기준' : '';
+
+    // ── 1. 공사 진행률 ──
+    var csData = JSON.parse(localStorage.getItem(sk('cm_cs_status')) || '{}');
+    var BDATA = JSON.parse(localStorage.getItem(sk('cm_building_data')) || '{}');
+    var gDone = 0, gTotal = 0;
+    Object.keys(BDATA).forEach(function(b) {
+      Object.keys(BDATA[b]||{}).forEach(function(fl) {
+        Object.keys(BDATA[b][fl]||{}).forEach(function(gj) {
+          gTotal++;
+          if (csData[b] && csData[b][fl] && csData[b][fl][gj] === 'done') gDone++;
+        });
+      });
+    });
+    var progressRate = gTotal ? Math.round(gDone / gTotal * 100) : 0;
+    var el = document.getElementById('dash-progress');
+    if (el) el.textContent = progressRate + '%';
+    el = document.getElementById('dash-progress-bar');
+    if (el) el.style.width = progressRate + '%';
+    el = document.getElementById('dash-progress-sub');
+    if (el) el.textContent = gTotal ? gDone + ' / ' + gTotal + ' 완료' : '공사현황 데이터 없음';
+
+    // ── 2. 손익현황 테이블 ──
+    var pjData = JSON.parse(localStorage.getItem('cm_project_' + activeSiteId) || '{}');
+    var pivot = pjData.pivotData || {columns:[], cells:{}};
+    var expenses = JSON.parse(localStorage.getItem(sk('cm_expenses')) || '[]');
+    var monthExp = expenses.filter(function(d) { return d.date && d.date.startsWith(curYm); });
+    var monthExpTotal = monthExp.reduce(function(s, d) { return s + (d.amount||0) + (d.vat||0); }, 0);
+
+    // 도급금액 계산
+    function sumPivot(keys) {
+      var t = 0;
+      pivot.columns.forEach(function(_, ci) { keys.forEach(function(k) { t += (pivot.cells[k+'_'+ci]||0); }); });
+      return t;
+    }
+    var dogMat = sumPivot(['material']);
+    var dogLab = sumPivot(['labor']);
+    var dogIns = sumPivot(['ind_injury','ind_employ','ind_health','ind_longcare','ind_pension','ind_safety','ind_retire','ind_equip','ind_misc']);
+    var dogTax = sumPivot(['purchase_tax','vat']);
+    var dogTotal = dogMat + dogLab + dogIns + dogTax;
+
+    // 실행금액 (도급의 약 90~98% - 실제로는 실행예산 데이터 필요, 현재는 도급 기반 추정)
+    // TODO: 실행예산 데이터 연동 시 교체
+    var silMat = dogMat, silLab = dogLab, silIns = dogIns, silTax = dogTax, silTotal = dogTotal;
+
+    // 투입금액 (경비+노무비 실적)
+    var expTotal = expenses.reduce(function(s,d){return s+(d.amount||0)+(d.vat||0);},0);
+    // 노무비 투입 (출역 기반)
+    var att = JSON.parse(localStorage.getItem(sk('cm_attendance')) || '{}');
+    var workers = JSON.parse(localStorage.getItem(sk('cm_workers')) || '[]');
+    var laborCost = 0;
+    Object.keys(att).forEach(function(dk) {
+      var day = att[dk];
+      Object.keys(day).forEach(function(nm) {
+        var d = Number(day[nm])||0; if (!d) return;
+        var w = workers.find(function(x){return x.name===nm;});
+        if (w) laborCost += (Number(w.wage)||0) * d;
+      });
+    });
+    var totalInvested = expTotal + laborCost;
+
+    var f = function(v){return v?Number(v).toLocaleString():'-';};
+    var pct = function(a,b){return b>0?Math.round(a/b*100)+'%':'-';};
+
+    var pnlRows = [
+      { label:'재료비', dog:dogMat, sil:silMat, inv:0 },
+      { label:'노무비', dog:dogLab, sil:silLab, inv:laborCost },
+      { label:'사회보험', dog:dogIns, sil:silIns, inv:0 },
+      { label:'경비', dog:0, sil:0, inv:expTotal },
+      { label:'매입세', dog:dogTax, sil:silTax, inv:0 }
+    ];
+    var pnlTbody = document.getElementById('dash-pnl-tbody');
+    if (pnlTbody) {
+      var html = '';
+      var sumDog=0,sumSil=0,sumInv=0;
+      pnlRows.forEach(function(r) {
+        sumDog+=r.dog; sumSil+=r.sil; sumInv+=r.inv;
+        var remDog = r.dog - r.inv;
+        var remSil = r.sil - r.inv;
+        html += '<tr>';
+        html += '<td style="padding:8px;font-weight:600">' + r.label + '</td>';
+        html += '<td style="padding:8px;text-align:right">' + f(r.dog) + '</td>';
+        html += '<td style="padding:8px;text-align:right">' + f(r.sil) + '</td>';
+        html += '<td style="padding:8px;text-align:center">' + pct(r.sil, r.dog) + '</td>';
+        html += '<td style="padding:8px;text-align:right">' + f(r.inv) + '</td>';
+        html += '<td style="padding:8px;text-align:center">' + pct(r.inv, r.dog) + '</td>';
+        html += '<td style="padding:8px;text-align:right">' + f(remDog) + '</td>';
+        html += '<td style="padding:8px;text-align:right">' + f(remSil) + '</td>';
+        html += '</tr>';
+      });
+      // 합계
+      var remDogT = sumDog - sumInv, remSilT = sumSil - sumInv;
+      html += '<tr style="background:#fff9c4;font-weight:800">';
+      html += '<td style="padding:8px;text-align:center">합계금액</td>';
+      html += '<td style="padding:8px;text-align:right">' + f(sumDog) + '</td>';
+      html += '<td style="padding:8px;text-align:right">' + f(sumSil) + '</td>';
+      html += '<td style="padding:8px;text-align:center">' + pct(sumSil, sumDog) + '</td>';
+      html += '<td style="padding:8px;text-align:right">' + f(sumInv) + '</td>';
+      html += '<td style="padding:8px;text-align:center">' + pct(sumInv, sumDog) + '</td>';
+      html += '<td style="padding:8px;text-align:right;color:#2e7d32">' + f(remDogT) + '</td>';
+      html += '<td style="padding:8px;text-align:right;color:#2e7d32">' + f(remSilT) + '</td>';
+      html += '</tr>';
+      pnlTbody.innerHTML = html;
+    }
+
+    // ── 4. 금일 출역 ──
+    var todayAtt = att[today] || {};
+    var todayCount = Object.keys(todayAtt).filter(function(k){return Number(todayAtt[k])>0;}).length;
+    var activeW = workers.filter(function(w){return !w.leaveDate || w.leaveDate.length < 5;});
+    var totalWorkers = activeW.length;
+    el = document.getElementById('dash-attendance');
+    if (el) el.textContent = todayCount + '명';
+    el = document.getElementById('dash-attendance-sub');
+    if (el) el.textContent = '재직 ' + totalWorkers + '명 중';
+
+    // ── 6. 인력 현황 ──
+    var laborEl = document.getElementById('dash-labor-info');
+    if (laborEl) {
+      var monthlyW = activeW.filter(function(w){return w.empType==='monthly';}).length;
+      var dailyW = activeW.filter(function(w){return w.empType==='daily';}).length;
+      var monthAttTotal = 0;
+      Object.keys(att).forEach(function(dk) {
+        if (dk.startsWith(curYm)) {
+          var day = att[dk];
+          Object.keys(day).forEach(function(nm) { monthAttTotal += Number(day[nm])||0; });
+        }
+      });
+      laborEl.innerHTML = '<div style="display:flex;flex-direction:column;gap:12px">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--text3)">재직 인원</span><span style="font-size:18px;font-weight:800">' + activeW.length + '명</span></div>'
+        + '<div style="display:flex;gap:16px">'
+        + '<div style="flex:1;background:var(--surface2);border-radius:8px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--text3)">월급직</div><div style="font-size:16px;font-weight:800;color:var(--accent2)">' + monthlyW + '</div></div>'
+        + '<div style="flex:1;background:var(--surface2);border-radius:8px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--text3)">일당직</div><div style="font-size:16px;font-weight:800;color:var(--accent3)">' + dailyW + '</div></div>'
+        + '</div>'
+        + '<div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid var(--border)"><span style="font-size:12px;color:var(--text3)">이번달 총 공수</span><span style="font-size:16px;font-weight:800;color:var(--accent)">' + monthAttTotal.toFixed(1) + '공수</span></div>'
+        + '</div>';
+    }
+
+    // ── 8. 모듈 바로가기 ──
+    el=document.getElementById('dash-mod-labor');
+    if(el) el.textContent='금일 '+todayCount+'명 · 재직 '+totalWorkers+'명';
+    el=document.getElementById('dash-mod-expense');
+    if(el) el.textContent=(now.getMonth()+1)+'월 '+monthExp.length+'건 · '+(monthExpTotal>0?Math.round(monthExpTotal/10000).toLocaleString()+'만원':'-');
+    var meals=JSON.parse(localStorage.getItem(sk('cm_meals'))||'{}');
+    var mealCount=0;
+    Object.keys(meals).forEach(function(dk){if(dk.startsWith(curYm)){Object.keys(meals[dk]).forEach(function(nm){var m=meals[dk][nm];if(!m)return;if(m.b)mealCount++;if(m.l)mealCount++;if(m.d)mealCount++;});}});
+    el=document.getElementById('dash-mod-meal');
+    if(el) el.textContent=(now.getMonth()+1)+'월 총 '+mealCount+'식';
+    el=document.getElementById('dash-mod-fund');
+    if(el) el.textContent='자금청구 관리';
+  }
+
   // 백업
   window.exportData=function(){
     var BASE_KEYS=['cm_workers','cm_teams','cm_attendance','cm_cs_status','cm_contract_rows','cm_worklogs','cm_building_data','cm_project_info','cm_expenses','cm_meals','cm_restaurants'];
@@ -13292,6 +13366,7 @@ window.cmsLogout=function(){
 
   initFilters();
   expRender();
+  setTimeout(function(){ if(typeof renderDashboard==='function') renderDashboard(); }, 300);
 })();
 </script>
 
